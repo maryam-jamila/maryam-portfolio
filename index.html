@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maryam Jamila — Software Engineer &amp; Graphic Designer</title>
+<meta name="description" content="Maryam Jamila — Software Engineering graduate, Graphic Designer and UI/UX & Creative Technologist. Designing meaningful digital experiences through creativity and technology.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============================== NAV ============================== -->
+<nav class="site-nav">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span><span data-field="brand-name">Maryam Jamila</span><small>Design &amp; Engineering</small></span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="what-i-do.html">What I Do</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="experience.html">Experience</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+
+    <div class="nav-cta">
+      <a href="contact.html" class="btn btn-ghost">Let's Connect</a>
+    </div>
+
+    <button class="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="what-i-do.html">What I Do</a>
+  <a href="portfolio.html">Portfolio</a>
+  <a href="experience.html">Experience</a>
+  <a href="contact.html">Contact</a>
+</div>
+
+<!-- ============================== HERO ============================== -->
+<header class="hero">
+  <div class="ambient">
+    <div class="blob blob-violet" style="width:520px;height:520px;top:-120px;left:-140px;animation:drift-a 16s ease-in-out infinite;"></div>
+    <div class="blob blob-teal" style="width:420px;height:420px;bottom:-140px;right:-100px;animation:drift-b 18s ease-in-out infinite;"></div>
+  </div>
+
+  <div class="container">
+    <div class="hero-copy">
+      <p class="eyebrow">Portfolio</p>
+      <h1 class="reveal" id="hero-name">Maryam Jamila</h1>
+      <p class="hero-role reveal reveal-delay-1" id="hero-roles">
+        <span>Software Engineering Graduate</span><span class="dot">•</span>
+        <span>Graphic Designer</span><span class="dot">•</span>
+        <span>UI/UX &amp; Creative Technologist</span>
+      </p>
+      <p class="hero-tagline reveal reveal-delay-2" id="hero-tagline">
+        "Designing meaningful digital experiences through creativity and technology."
+      </p>
+      <div class="hero-actions reveal reveal-delay-3">
+        <a href="portfolio.html" class="btn btn-primary">
+          View My Work
+          <svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href="contact.html" class="btn btn-ghost">
+          Let's Connect
+          <svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-photo-wrap reveal reveal-delay-2">
+      <div class="hero-photo" id="hero-photo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+          <circle cx="12" cy="8.5" r="3.6"/>
+          <path d="M4.5 20c1.4-4 4-6 7.5-6s6.1 2 7.5 6"/>
+        </svg>
+        <span>Profile Photo — Add via Admin Panel</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-cue" aria-hidden="true">
+    <span>Scroll</span>
+    <div class="line"></div>
+  </div>
+</header>
+
+<!-- ============================== INTRO ============================== -->
+<section class="intro">
+  <div class="container reveal">
+    <p class="eyebrow">About</p>
+    <p id="intro-paragraph">
+      I am a Software Engineering graduate from Fatima Jinnah Women University, Rawalpindi, with a passion for
+      creating visually engaging designs and meaningful digital experiences.
+      My academic journey allowed me to work on software applications,
+      UI/UX concepts, and AI-powered solutions, while my professional experience has helped
+      me develop practical skills in graphic design, branding, and social media design.
+    </p>
+  </div>
+</section>
+
+<!-- ============================== SKILLS ============================== -->
+<section class="skills" id="skills">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Expertise</p>
+      <h2>Where design thinking meets<br>engineering logic.</h2>
+      <p>A practice built at the intersection of two disciplines — visual craft and technical execution.</p>
+    </div>
+
+    <div class="skill-legend reveal">
+      <span><i class="legend-dot creative"></i> Creative / Design</span>
+      <span><i class="legend-dot tech"></i> Engineering / Tech</span>
+      <span><i class="legend-dot merge"></i> Where they meet</span>
+    </div>
+
+    <div class="skills-grid" id="skills-grid">
+      <!-- Populated by js/site-render.js from Admin Panel skills data -->
+    </div>
+  </div>
+</section>
+
+<!-- ============================== FEATURED WORK ============================== -->
+<section class="work" id="work">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Selected Work</p>
+      <h2>Featured Projects</h2>
+      <p>A mix of software applications, an AI-driven final year project, and brand &amp; visual design work.</p>
+    </div>
+
+    <div class="work-grid" id="work-grid">
+      <!-- Populated by js/site-render.js from Admin Panel project data (Featured projects) -->
+    </div>
+
+    <div class="work-more reveal">
+      <a href="portfolio.html" class="btn btn-primary">
+        View Full Portfolio
+        <svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== EXPERIENCE ============================== -->
+<section class="experience" id="experience">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Experience</p>
+      <h2>Professional Experience</h2>
+    </div>
+
+    <div class="timeline" id="home-timeline">
+      <!-- Populated by js/site-render.js from Admin Panel experience data -->
+    </div>
+  </div>
+</section>
+
+<!-- ============================== COMMUNITY ============================== -->
+<section class="community" id="community">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Community &amp; Leadership</p>
+      <h2>Beyond the Screen</h2>
+    </div>
+
+    <div id="community-card-container">
+      <!-- Populated by js/site-render.js from Admin Panel community data -->
+    </div>
+  </div>
+</section>
+
+<!-- ============================== CLOSING CTA ============================== -->
+<section class="cta-band">
+  <div class="ambient">
+    <div class="blob blob-violet" style="width:460px;height:460px;top:-160px;left:10%;animation:drift-a 20s ease-in-out infinite;"></div>
+    <div class="blob blob-teal" style="width:400px;height:400px;bottom:-180px;right:10%;animation:drift-b 22s ease-in-out infinite;"></div>
+  </div>
+  <div class="container reveal">
+    <h2>Have a project, idea, or collaboration in mind? <span class="gradient-text">Let's create something meaningful together.</span></h2>
+    <a href="contact.html" class="btn btn-primary">
+      Let's Connect
+      <svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ============================== FOOTER ============================== -->
+<footer class="site-footer">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span><span data-field="brand-name">Maryam Jamila</span><small>Design &amp; Engineering</small></span>
+    </a>
+
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="what-i-do.html">What I Do</a></li>
+      <li><a href="portfolio.html">Portfolio</a></li>
+      <li><a href="experience.html">Experience</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+
+    <div class="footer-social">
+      <!-- Populated by js/site-render.js from Admin Panel contact data -->
+    </div>
+
+    <p class="footer-note" data-field="footer-note">© 2026 Maryam Jamila. All rights reserved.</p>
+    <p class="footer-admin-link"><a href="admin.html">Admin Panel</a></p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/data.js"></script>
+<script src="js/supabase-config.js"></script>
+<script>if (window.SUPABASE_CONFIG && !window.SUPABASE_CONFIG.url.includes("PASTE_YOUR") && !window.SUPABASE_CONFIG.key.includes("PASTE_YOUR")) { window.supabaseClient = supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.key); }</script>
+<script src="js/store.js"></script>
+<script src="js/site-render.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
