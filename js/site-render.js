@@ -67,12 +67,32 @@
         <span class="video-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Video</span>`;
     }
     if (project.images && project.images[0]) {
-      return `<img src="${esc(project.images[0])}" alt="${esc(project.title)}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`;
+      return `<img class="thumb-bg" src="${esc(project.images[0])}" alt="" aria-hidden="true">
+        <img class="thumb-img" src="${esc(project.images[0])}" alt="${esc(project.title)}">`;
     }
     const icon = THUMB_ICON[project.category] || THUMB_ICON["Graphic Design"];
     return `<div class="thumb-gradient" style="${thumbStyle(project.category, idx)}"></div>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">${icon}</svg>
       <span class="thumb-label">Thumbnail — Add via Admin Panel</span>`;
+  }
+
+  /* Thumbnails: normal images fill the card (cover). Images whose shape is very different from the card
+     (tall invitation cards, posters, very wide banners) are shown whole (contain) over a soft blurred backdrop,
+     so nothing gets zoomed in or cut off. */
+  function fitThumbnails() {
+    document.querySelectorAll(".portfolio-thumb, .work-thumb").forEach(box => {
+      const img = box.querySelector("img.thumb-img");
+      if (!img) return;
+      const apply = () => {
+        if (!img.naturalWidth || !box.clientWidth || !box.clientHeight) return;
+        const imgRatio = img.naturalWidth / img.naturalHeight;
+        const boxRatio = box.clientWidth / box.clientHeight;
+        const diff = Math.abs(imgRatio - boxRatio) / boxRatio;
+        box.classList.toggle("thumb-fit", diff > 0.2);
+      };
+      if (img.complete) apply(); else img.addEventListener("load", apply);
+      window.addEventListener("resize", apply);
+    });
   }
 
   function photoMarkup(photo) {
@@ -361,6 +381,7 @@
     renderPortfolio(data);
     renderExperiencePage(data);
     renderContact(data);
+    fitThumbnails();
     document.dispatchEvent(new CustomEvent("site-rendered"));
   }
 
