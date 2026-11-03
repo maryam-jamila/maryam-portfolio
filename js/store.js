@@ -152,6 +152,35 @@ const Store = (() => {
     return client().storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
   }
 
+  /* ---- Video support -------------------------------------------------
+     Videos are stored in the SAME "images" arrays as photos (as public URLs),
+     so the database structure is unchanged. They are uploaded straight to the
+     existing public Storage bucket under a "videos/" folder. */
+  const VIDEO_EXT = /\.(mp4|webm|mov|m4v|ogv)(\?.*)?(#.*)?$/i;
+  const MAX_VIDEO_BYTES = 50 * 1024 * 1024; /* Supabase free-plan per-file limit */
+
+  function isVideoUrl(src) {
+    return typeof src === "string" && (VIDEO_EXT.test(src) || /\/videos\//.test(src) || src.startsWith("data:video/"));
+  }
+
+  async function uploadVideo(file, folder) {
+    if (!file || !String(file.type).startsWith("video/")) throw new Error(`"${file && file.name}" isn't a video file.`);
+    if (file.size > MAX_VIDEO_BYTES) {
+      throw new Error(`"${file.name}" is ${(file.size / 1048576).toFixed(1)}MB. Maximum video size is 50MB — please compress it (e.g. HandBrake) or paste a YouTube/Drive-hosted MP4 link instead.`);
+    }
+    if (!(await isAdmin())) throw new Error("This account is not authorized to upload videos.");
+    const extFromName = (file.name.split(".").pop() || "").toLowerCase();
+    const ext = /^(mp4|webm|mov|m4v|ogv)$/.test(extFromName) ? extFromName : (file.type === "video/webm" ? "webm" : "mp4");
+    const path = `videos/${folder || "general"}/${crypto.randomUUID()}.${ext}`;
+    const { error } = await client().storage.from(BUCKET).upload(path, file, {
+      contentType: file.type,
+      upsert: false,
+      cacheControl: "31536000"
+    });
+    if (error) throw error;
+    return client().storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+  }
+
   async function moveImagesToStorage(data) {
     if (isDataUrl(data.personal?.photo)) {
       data.personal.photo = await uploadDataUrl(data.personal.photo, "profile");
@@ -267,6 +296,8 @@ const Store = (() => {
     exportAsDataJs,
     uid,
     getStorageUsageBytes,
-    isAdmin
+    isAdmin,
+    isVideoUrl,
+    uploadVideo
   };
 })();

@@ -61,6 +61,11 @@
   }
 
   function thumbInner(project, idx) {
+    const first = project.images && project.images[0];
+    if (first && Store.isVideoUrl(first)) {
+      return `<video src="${esc(first)}#t=0.1" muted playsinline preload="metadata" class="thumb-video" aria-label="${esc(project.title)}"></video>
+        <span class="video-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Video</span>`;
+    }
     if (project.images && project.images[0]) {
       return `<img src="${esc(project.images[0])}" alt="${esc(project.title)}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`;
     }
@@ -71,9 +76,11 @@
   }
 
   function photoMarkup(photo) {
-    if (photo) {
-      return `<img src="${esc(photo)}" alt="Profile photo" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`;
-    }
+    /* Falls back to the permanent profile image when no photo is set in the database. */
+    return `<img src="${esc(photo || "images/profile.jpg")}" alt="Maryam Jamila - Profile Photo" style="width:100%;height:100%;object-fit:cover;object-position:center top;border-radius:inherit;" onerror="this.outerHTML='<span>Profile Photo</span>'">`;
+  }
+
+  function photoMarkupLegacy(photo) {
     return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
         <circle cx="12" cy="8.5" r="3.6"/>
         <path d="M4.5 20c1.4-4 4-6 7.5-6s6.1 2 7.5 6"/>

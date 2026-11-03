@@ -52,7 +52,12 @@
     let slideIndex = 0;
     let slideCount = 0;
 
+    function pauseAllVideos() {
+      galleryTrack.querySelectorAll("video").forEach(v => { try { v.pause(); } catch (e) {} });
+    }
+
     function updateGallery() {
+      pauseAllVideos();
       galleryTrack.style.transform = `translateX(-${slideIndex * 100}%)`;
       [...galleryDots.children].forEach((d, i) => d.classList.toggle("active", i === slideIndex));
     }
@@ -88,7 +93,16 @@
       images.forEach((src, i) => {
         const slide = document.createElement("div");
         slide.className = "gallery-slide";
-        if (src) {
+        if (src && Store.isVideoUrl(src)) {
+          const vid = document.createElement("video");
+          vid.src = src;
+          vid.controls = true;
+          vid.playsInline = true;
+          vid.preload = "metadata";
+          vid.setAttribute("controlsList", "nodownload");
+          vid.className = "gallery-video";
+          slide.appendChild(vid);
+        } else if (src) {
           const img = document.createElement("img");
           img.src = src;
           img.alt = p.title || "Project image";
@@ -112,6 +126,7 @@
     }
 
     function closeLightbox() {
+      pauseAllVideos();
       lightbox.classList.remove("open");
       lightbox.setAttribute("aria-hidden", "true");
       document.body.style.overflow = "";

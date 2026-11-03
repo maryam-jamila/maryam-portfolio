@@ -109,6 +109,33 @@
     return Math.round(base64Length * 0.75);
   }
 
+  /* Shows an image or a video preview thumbnail in the admin lists. */
+  function mediaThumb(src) {
+    return Store.isVideoUrl(src)
+      ? `<video src="${esc(src)}#t=0.1" muted playsinline preload="metadata"></video><span class="admin-video-tag">VIDEO</span>`
+      : `<img src="${esc(src)}" alt="">`;
+  }
+
+  /* Uploads a mixed selection of images and videos and hands each resulting
+     value (data-URL for images, public URL for videos) to addFn. */
+  async function processMediaFiles(files, folder, addFn) {
+    for (const file of files) {
+      try {
+        if (file.type && file.type.startsWith("video/")) {
+          toast(`Uploading video "${file.name}"… please wait, don't close this page.`);
+          const url = await Store.uploadVideo(file, folder);
+          await addFn(url);
+          toast("Video uploaded and saved.");
+        } else {
+          const dataUrl = await fileToDataURL(file);
+          await addFn(dataUrl);
+        }
+      } catch (err) {
+        toast(friendlyStorageError(err));
+      }
+    }
+  }
+
   /* Turns a raw browser storage error into guidance the user can act on. */
   function friendlyStorageError(err) {
     const msg = (err && err.message) || "";
@@ -457,7 +484,7 @@
   /* PORTFOLIO PROJECTS                                                  */
   /* ================================================================== */
 
-  function renderProjectsForm() {
+  function renderProjectsFormRaw() {
     const data = Store.getData();
     const container = document.getElementById("projects-form");
     const cats = data.projectCategories || [];
@@ -541,18 +568,18 @@
             <div class="admin-image-list" data-images-for="${esc(p.id)}">
               ${(p.images || []).map((img, i) => `
                 <div class="admin-image-thumb">
-                  <img src="${esc(img)}" alt="">
+                  ${mediaThumb(img)}
                   <button class="proj-image-remove-btn" data-img-idx="${i}">✕</button>
                 </div>`).join("")}
             </div>
             <div class="admin-actions">
               <label class="admin-btn admin-btn-sm">
-                Upload Image(s)
-                <input type="file" accept="image/*" multiple class="proj-image-file-input" style="display:none;">
+                Upload Image(s) / Video(s)
+                <input type="file" accept="image/*,video/mp4,video/webm,video/quicktime" multiple class="proj-image-file-input" style="display:none;">
               </label>
-              <input type="url" class="proj-image-url-input" placeholder="Or paste an image URL and press Enter" style="min-width:260px;padding:9px 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text);font-size:13px;">
+              <input type="url" class="proj-image-url-input" placeholder="Or paste an image / video URL and press Enter" style="min-width:260px;padding:9px 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text);font-size:13px;">
             </div>
-            <p class="admin-field-hint">First image is used as the project thumbnail. Max ~1.5MB per uploaded image.</p>
+            <p class="admin-field-hint">First image or video is used as the project thumbnail. Videos: MP4 or WebM, up to 50MB each (uploaded directly to Supabase Storage).</p>
           </div>
 
           <div class="admin-actions">
@@ -610,14 +637,7 @@
       const fileInput = card.querySelector(".proj-image-file-input");
       fileInput.addEventListener("change", async (e) => {
         const files = Array.from(e.target.files || []);
-        for (const file of files) {
-          try {
-            const dataUrl = await fileToDataURL(file);
-            Store.update(d => { d.projects[idx].images.push(dataUrl); });
-          } catch (err) {
-            toast(friendlyStorageError(err));
-          }
-        }
+        await processMediaFiles(files, `projects/${data.projects[idx].id || "project"}`, v => Store.update(d => { d.projects[idx].images.push(v); }));
         renderProjectsForm();
       });
 
@@ -632,11 +652,44 @@
     });
   }
 
+  /* Re-renders a list of editable cards WITHOUT losing the user's place:
+     the same cards stay open and the page stays at the same scroll position. */
+  function withViewPreserved(listSelector, getItems, rawRender) {
+    return function () {
+      const y = window.scrollY;
+      const items = getItems();
+      const openIds = [];
+      document.querySelectorAll(`${listSelector} .admin-item-card`).forEach(card => {
+        const editor = card.querySelector(".project-editor, .exp-editor");
+        const item = items[Number(card.dataset.idx)];
+        if (editor && editor.style.display !== "none" && item) openIds.push(item.id);
+      });
+
+      rawRender();
+
+      const fresh = getItems();
+      document.querySelectorAll(`${listSelector} .admin-item-card`).forEach(card => {
+        const item = fresh[Number(card.dataset.idx)];
+        if (!item || !openIds.includes(item.id)) return;
+        const editor = card.querySelector(".project-editor, .exp-editor");
+        const btn = card.querySelector(".project-toggle-btn, .exp-toggle-btn");
+        if (editor) editor.style.display = "block";
+        if (btn) btn.textContent = "Close";
+      });
+
+      window.scrollTo({ top: y, left: 0, behavior: "instant" });
+      requestAnimationFrame(() => window.scrollTo({ top: y, left: 0, behavior: "instant" }));
+    };
+  }
+
+  const renderProjectsForm = withViewPreserved("#project-list", () => Store.getData().projects || [], () => renderProjectsFormRaw());
+  const renderExperienceForm = withViewPreserved("#experience-list", () => Store.getData().experience || [], () => renderExperienceFormRaw());
+
   /* ================================================================== */
   /* EXPERIENCE                                                          */
   /* ================================================================== */
 
-  function renderExperienceForm() {
+  function renderExperienceFormRaw() {
     const data = Store.getData();
     const container = document.getElementById("experience-form");
 
@@ -718,16 +771,16 @@
             <div class="admin-image-list" data-exp-images="${esc(exp.id)}">
               ${(exp.images || []).map((img, i) => `
                 <div class="admin-image-thumb">
-                  <img src="${esc(img)}" alt="">
+                  ${mediaThumb(img)}
                   <button class="exp-image-remove-btn" data-img-idx="${i}">✕</button>
                 </div>`).join("")}
             </div>
             <div class="admin-actions">
               <label class="admin-btn admin-btn-sm">
-                Upload Image(s)
-                <input type="file" accept="image/*" multiple class="exp-image-file-input" style="display:none;">
+                Upload Image(s) / Video(s)
+                <input type="file" accept="image/*,video/mp4,video/webm,video/quicktime" multiple class="exp-image-file-input" style="display:none;">
               </label>
-              <input type="url" class="exp-image-url-input" placeholder="Or paste an image URL and press Enter" style="min-width:260px;padding:9px 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text);font-size:13px;">
+              <input type="url" class="exp-image-url-input" placeholder="Or paste an image / video URL and press Enter" style="min-width:260px;padding:9px 12px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text);font-size:13px;">
             </div>
           </div>
 
@@ -782,14 +835,7 @@
       const fileInput = card.querySelector(".exp-image-file-input");
       fileInput.addEventListener("change", async (e) => {
         const files = Array.from(e.target.files || []);
-        for (const file of files) {
-          try {
-            const dataUrl = await fileToDataURL(file);
-            Store.update(d => { d.experience[idx].images.push(dataUrl); });
-          } catch (err) {
-            toast(friendlyStorageError(err));
-          }
-        }
+        await processMediaFiles(files, `experience/${data.experience[idx].id || "experience"}`, v => Store.update(d => { d.experience[idx].images.push(v); }));
         renderExperienceForm();
       });
 
