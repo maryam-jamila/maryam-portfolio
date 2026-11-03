@@ -44,3 +44,9 @@ Project/profile images are uploaded to the public `portfolio-images` Storage buc
 ## 7. Contact form
 
 Visitors can submit contact messages without logging in. Only the configured admin account can read or delete those messages.
+
+## 8. Videos (new)
+
+In the Admin Panel, the project and experience image sections now accept **video files (MP4 / WebM, up to 50MB each)** as well as images.
+Videos are uploaded to the same public `portfolio-images` bucket under a `videos/` folder, and their public URL is saved in the same `images` list — so **no database or SQL changes are needed**.
+You can also paste a direct video URL (ending in .mp4/.webm). The first item in a project's list (image or video) is used as its thumbnail.
