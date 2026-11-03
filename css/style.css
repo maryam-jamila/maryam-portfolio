@@ -1465,3 +1465,176 @@ h1,h2,h3,h4{
   object-position: center top;
   display: block;
 }
+
+/* =========================================================================
+   LAYOUT POLISH + VIDEO SUPPORT (added)
+   ========================================================================= */
+
+/* Ambient blobs fade out softly instead of being cut off with a hard edge */
+.ambient{
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+}
+.hero, .page-header{ position:relative; overflow-x:clip; }
+
+/* Hero: roles never break awkwardly, placeholder text stays inside the frame */
+.hero-role{ align-items:center; }
+.hero-photo span{ text-align:center; padding:0 18px; max-width:100%; }
+.hero-photo-wrap{ width:100%; }
+@media (max-width: 980px){
+  .hero{ min-height:auto; padding-bottom:70px; }
+  .hero-photo-wrap::before{ inset:-10px; }
+}
+
+/* Portfolio grid: gap-free responsive grid (featured cards get an accent, not a hole-making span) */
+.portfolio-grid{
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
+  grid-auto-flow: row;
+  align-items: stretch;
+}
+.portfolio-card, .portfolio-card.featured{ grid-column: auto; grid-row: auto; }
+.portfolio-card.featured{ border-color: rgba(139,108,255,.38); box-shadow: 0 0 0 1px rgba(139,108,255,.12), 0 18px 50px -24px rgba(139,108,255,.45); }
+.portfolio-card.featured .portfolio-thumb{ aspect-ratio: 4/3; }
+.portfolio-card.featured .portfolio-meta h3{ font-size: 19px; }
+.portfolio-card.featured .portfolio-meta p{ font-size: 13.5px; }
+.portfolio-thumb img, .portfolio-thumb video, .work-thumb img, .work-thumb video{ transition: transform .8s var(--ease); }
+.portfolio-card:hover .portfolio-thumb img, .portfolio-card:hover .portfolio-thumb video{ transform: scale(1.05); }
+.thumb-label{ right:14px; }
+
+/* Video thumbnails + badge */
+.thumb-video{ width:100%; height:100%; object-fit:cover; display:block; background:#000; }
+.work-thumb .thumb-video{ position:absolute; inset:0; }
+.portfolio-thumb .thumb-video{ position:absolute; inset:0; }
+.video-badge{
+  position:absolute; top:12px; left:12px; z-index:3;
+  display:inline-flex; align-items:center; gap:6px;
+  font-family: var(--font-ui); font-size:10.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  padding:5px 10px 5px 8px; border-radius:999px;
+  background: rgba(11,13,21,.72); backdrop-filter: blur(6px);
+  border:1px solid var(--border-strong); color: var(--text);
+}
+.video-badge svg{ width:11px; height:11px; color: var(--teal); }
+.work-thumb .video-badge, .portfolio-thumb .video-badge{ bottom:auto; }
+
+/* Lightbox: videos fit the stage and stay above the gradient overlay */
+.gallery-slide video, .gallery-video{
+  width:100%; height:100%; max-width:100%; max-height:100%;
+  object-fit:contain; display:block; background:#000; position:relative; z-index:2;
+}
+.gallery-slide::after{ pointer-events:none; }
+.lightbox-panel{ scrollbar-width:thin; }
+.lightbox-gallery{ min-width:0; }
+.lightbox-info{ min-width:0; overflow-wrap:anywhere; }
+@media (max-width: 760px){
+  .lightbox-panel{ max-height: 92vh; }
+  .gallery-nav{ width:34px; height:34px; }
+}
+
+/* Small-screen safety nets */
+img, video{ max-width:100%; }
+.container{ width:100%; }
+h1, h2, h3{ overflow-wrap:break-word; }
+.portfolio-thumb .video-badge svg, .work-thumb .video-badge svg{
+  position:static; transform:none; top:auto; left:auto; width:11px; height:11px; flex-shrink:0;
+}
+
+/* Gallery dots sit below the media so they never cover video controls */
+.gallery-dots{
+  position:static; transform:none; justify-content:center; padding:14px 0 16px; background: var(--surface-2);
+}
+.gallery-viewport{ background:#000; }
+
+/* =========================================================================
+   MOBILE + TABLET RESPONSIVE PASS (added)
+   ========================================================================= */
+html{ -webkit-text-size-adjust:100%; }
+body{ overflow-wrap:break-word; }
+.nav-toggle{ min-width:44px; min-height:44px; }
+
+@media (max-width: 980px){
+  .scroll-cue{ display:none; }
+  .intro{ padding: 90px 0; }
+  .experience{ padding: 90px 0; }
+  .cta-band{ padding: 110px 0; }
+  .work{ padding: 50px 0 90px; }
+  .about-grid{ grid-template-columns: 1fr; gap: 40px; }
+  .about-photo{ margin: 0 auto; max-width: 280px; }
+  .contact-section{ padding: 20px 0 100px; }
+  .portfolio-section{ padding-bottom: 100px; }
+}
+
+@media (max-width: 760px){
+  .container{ padding: 0 20px; }
+
+  /* Hero: compact, text + buttons visible on the first screen */
+  .hero{ min-height:auto; padding: 96px 0 56px; align-items:flex-start; }
+  .hero .container{ gap: 28px; }
+  .hero-photo-wrap{ max-width: 210px; margin: 8px auto 0; }
+  .hero-photo-wrap::before{ inset:-8px; }
+  .hero h1{ font-size: clamp(38px, 12vw, 52px); }
+  .hero-role{ gap: 4px 10px; font-size: 14px; }
+  .hero-role .dot{ display:none; }
+  .hero-role span:not(.dot){ padding:4px 11px; border:1px solid var(--border-strong); border-radius:999px; font-size:12.5px; white-space:normal; }
+  .hero-tagline{ margin-top: 20px; }
+  .hero-actions{ margin-top: 28px; gap: 12px; }
+  .hero-actions .btn{ flex:1 1 150px; justify-content:center; }
+
+  /* Section rhythm */
+  .intro, .experience{ padding: 70px 0; }
+  .cta-band{ padding: 80px 0; }
+  .work{ padding: 40px 0 70px; }
+  .page-header{ padding: 112px 0 36px; }
+  .portfolio-filter{ gap:8px; margin-bottom:32px; flex-wrap:nowrap; overflow-x:auto; padding-bottom:6px; max-width:100%; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  .portfolio-filter::-webkit-scrollbar{ display:none; }
+  .filter-btn{ flex:none; white-space:nowrap; padding:10px 18px; font-size:13px; }
+  .portfolio-grid{ gap:18px; }
+  .portfolio-meta{ padding:18px 18px 20px; }
+  .work-grid{ gap:18px; }
+  .work-body{ padding:20px 20px 22px; }
+  .skills-grid{ gap:14px; }
+
+  /* Footer stacks neatly */
+  .site-footer .container{ flex-direction:column; align-items:center; text-align:center; gap:22px; }
+  .footer-links{ flex-wrap:wrap; justify-content:center; gap:10px 20px; }
+  .footer-social{ justify-content:center; flex-wrap:wrap; }
+
+  /* Buttons & forms are comfortably tappable */
+  .btn{ min-height:46px; }
+  input, textarea, select{ font-size:16px; } /* prevents iOS zoom-on-focus */
+  .contact-grid{ gap:40px; }
+
+  /* Lightbox */
+  .lightbox{ padding: 10px; }
+  .lightbox-panel{ max-height: 94vh; border-radius: var(--radius-md); }
+  .lightbox-info{ padding: 26px 20px 30px; }
+  .lightbox-info h3{ font-size: 22px; }
+  .lightbox-close{ top:10px; right:10px; }
+}
+
+@media (max-width: 380px){
+  .container{ padding: 0 16px; }
+  .brand small{ display:none; }
+  .hero-photo-wrap{ max-width: 180px; }
+  .btn{ padding-left:18px; padding-right:18px; }
+}
+
+
+/* =========================================================================
+   THUMBNAIL FIT FIX (added)
+   Tall / odd-shaped project images (e.g. Invitation Cards) are shown whole
+   instead of being zoomed and cropped in the project cards.
+   ========================================================================= */
+.portfolio-thumb .thumb-img, .work-thumb .thumb-img{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; object-position:center; display:block; border-radius:inherit;
+}
+.portfolio-thumb .thumb-bg, .work-thumb .thumb-bg{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; display:block; border-radius:inherit;
+  filter:blur(22px) brightness(.6); transform:scale(1.25); opacity:0; transition:opacity .3s ease;
+}
+.portfolio-thumb.thumb-fit .thumb-bg, .work-thumb.thumb-fit .thumb-bg{ opacity:1; }
+.portfolio-thumb.thumb-fit .thumb-img, .work-thumb.thumb-fit .thumb-img{ object-fit:contain; }
+.portfolio-card:hover .portfolio-thumb.thumb-fit .thumb-img{ transform:scale(1.02); }
+.portfolio-thumb, .work-thumb{ overflow:hidden; }
+.portfolio-thumb .portfolio-overlay{ z-index:3; }
